@@ -1,27 +1,11 @@
 cmake_minimum_required(VERSION 3.11.4)
 project(Maestro)
 
-option(PYTHON_BINDING "Set when you want to build PYTHON_BINDING (Python bindings for the library)" ON)
+option(PYTHON_BINDING "Set when you want to build PYTHON_BINDING (Python bindings for the library)" OFF)
 
-if(WIN32 OR APPLE)
-    include(FetchContent)
-    FetchContent_Declare(
-        libusb
-        GIT_REPOSITORY https://github.com/libusb/libusb.git
-        GIT_TAG v1.0.23
-        UPDATE_COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/external/libusb/CMakeLists.txt" <SOURCE_DIR>/CMakeLists.txt
-    )
-
-    FetchContent_GetProperties(libusb)
-    if(NOT libusb_POPULATED)
-        FetchContent_Populate(libusb)
-        add_subdirectory(${libusb_SOURCE_DIR} ${libusb_BINARY_DIR})
-    endif()
-else()
-    include(FindPkgConfig)
-    pkg_search_module(LIBUSB REQUIRED libusb-1.0)
-    include_directories(${LIBUSB_INCLUDE_DIRS})
-endif()
+include(FindPkgConfig)
+pkg_search_module(LIBUSB REQUIRED libusb-1.0)
+include_directories(${LIBUSB_INCLUDE_DIRS})
 
 # Extract version information from git
 find_package(Git REQUIRED)
